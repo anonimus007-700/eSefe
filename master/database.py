@@ -8,6 +8,24 @@ class Database:
         self.user = user
         self.password = password
 
+    def open_database_connection(self):
+        self.conn = psycopg2.connect(
+            dbname=self.dbname,
+            user=self.user,
+            password=self.password,
+            host="localhost",
+            port="5432"
+        )
+        self.cur = self.conn.cursor()
+
+        return {self.conn, self.cur}
+
+    def write_test_command(self, command: str):
+        self.cur.execute(command)
+        self.conn.commit()
+
+        return self.cur
+
     def check_if_exits(self):
         try:
             conn = psycopg2.connect(
@@ -96,8 +114,28 @@ class Database:
         );
         """)
         conn.commit()
+
         cur.close()
         conn.close()
 
         print("Database and tables created successfully.")
+
+    def add_user(self, username, email, password, is_admin=False):
+        conn = psycopg2.connect(
+            dbname=self.dbname,
+            user=self.user,
+            password=self.password,
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO users (username, email, password, is_admin)
+            VALUES (%s, %s, %s, %s);
+        """, (username, email, password, is_admin))
+        conn.commit()
+
+        cur.close()
+        conn.close()
 
