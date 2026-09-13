@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+
+import os
+from dotenv import load_dotenv
+
 import uvicorn
 
 import database
-
 
 class User(BaseModel):
     username: str
@@ -11,7 +14,12 @@ class User(BaseModel):
     password: str
     is_admin: bool = False
 
-db = database.Database('database', 'admin', '12341')
+
+load_dotenv()
+
+db = database.Database(os.getenv("DB_NAME"), os.getenv("DB_USER"),
+                       os.getenv("DB_PASSWORD"), os.getenv("DB_HOST"),
+                       os.getenv("DB_PORT"))
 db.check_if_exits()
 db.open_database_connection()
 

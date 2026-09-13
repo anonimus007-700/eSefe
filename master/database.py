@@ -3,18 +3,20 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 class Database:
-    def __init__(self, dbname, user, password):
+    def __init__(self, dbname, user, password, host, port):
         self.dbname = dbname
         self.user = user
         self.password = password
+        self.host = host
+        self.port = port
 
     def open_database_connection(self):
         self.conn = psycopg2.connect(
             dbname=self.dbname,
             user=self.user,
             password=self.password,
-            host="localhost",
-            port="5432"
+            host=self.host,
+            port=self.port
         )
         self.cur = self.conn.cursor()
 
@@ -32,8 +34,8 @@ class Database:
                 dbname=self.dbname,
                 user=self.user,
                 password=self.password,
-                host="localhost",
-                port="5432"
+                host=self.host,
+                port=self.port
             )
             conn.close()
 
@@ -46,7 +48,7 @@ class Database:
 
     def create_database(self):
         conn = psycopg2.connect(
-            dbname="postgres",
+            dbname="template1",
             user=self.user,
             password=self.password,
             host="localhost",
@@ -63,8 +65,8 @@ class Database:
             dbname=self.dbname,
             user=self.user,
             password=self.password,
-            host="localhost",
-            port="5432"
+            host=self.host,
+            port=self.port
         )
         cur = conn.cursor()
 
